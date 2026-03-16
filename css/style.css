@@ -670,8 +670,8 @@ footer::before {
   section { padding: 72px 24px; }
 
   .profile-grid { grid-template-columns: 1fr; gap: 2px; }
-  .profile-card-img { aspect-ratio: 3/2; }
-  .profile-card-img img { object-fit: cover; object-position: top center; }
+  .profile-card-img { aspect-ratio: 3/4; }
+  .profile-card-img img { object-fit: contain; object-position: top center; }
 
   .story-grid { grid-template-columns: 1fr; }
 
