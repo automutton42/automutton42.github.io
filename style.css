@@ -27,12 +27,15 @@ body {
   overflow-x: hidden;
 }
 
-/* ── スキャンライン（明るい背景用） ── */
+/* ── スキャンライン ── */
 body::before {
   content: ''; position: fixed; inset: 0; z-index: 9000; pointer-events: none;
   background: repeating-linear-gradient(
-    0deg, transparent, transparent 3px,
-    rgba(0,0,0,0.018) 3px, rgba(0,0,0,0.018) 4px
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.07) 2px,
+    rgba(0,0,0,0.07) 3px
   );
 }
 
@@ -40,9 +43,17 @@ body::before {
 .grid-bg {
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background-image:
-    linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+    linear-gradient(rgba(0,0,0,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.07) 1px, transparent 1px);
   background-size: 48px 48px;
+}
+
+/* ── ノイズ風ドット装飾 ── */
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
+  background-size: 4px 4px;
+  opacity: 0.5;
 }
 
 /* ── コーナーブラケット装飾（汎用） ── */

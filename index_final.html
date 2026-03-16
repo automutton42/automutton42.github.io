@@ -120,7 +120,7 @@
   </div>
 
   <div class="hero-bg">
-    <img src="assets/images/hero_default.jpeg" alt="Eli & Lema" id="hero-img-trigger" style="cursor:zoom-in;">
+    <img src="assets/images/hero_default.jpeg" alt="Eli & Lema">
   </div>
 </section>
 
@@ -468,12 +468,6 @@
 </section>
 
 
-<!-- LIGHTBOX -->
-<div id="lb" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.88); align-items:center; justify-content:center; cursor:zoom-out;">
-  <button id="lb-close" style="position:fixed; top:20px; right:28px; font-size:22px; color:#fff; cursor:pointer; z-index:100000; background:none; border:none; opacity:0.8; font-family:Orbitron,sans-serif;">✕</button>
-  <img src="assets/images/hero_fullbody.jpeg" alt="Eli & Lema" style="max-width:92vw; max-height:92vh; object-fit:contain; cursor:default;">
-</div>
-
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">
@@ -507,23 +501,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   var first = document.getElementById('tab-news');
   if (first) first.style.display = 'block';
-
-  // === ライトボックス ===
-  var heroImg = document.getElementById('hero-img-trigger');
-  var lb = document.getElementById('lb');
-  var lbClose = document.getElementById('lb-close');
-
-  function openLb()  { lb.style.display = 'flex'; }
-  function closeLb() { lb.style.display = 'none'; }
-
-  if (heroImg) heroImg.addEventListener('click', openLb);
-  if (lbClose) lbClose.addEventListener('click', function(e) { e.stopPropagation(); closeLb(); });
-  if (lb) lb.addEventListener('click', function(e) {
-    if (e.target === lb) closeLb();
-  });
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeLb();
-  });
 
   // === ブログ展開 ===
   document.querySelectorAll('.blog-item').forEach(function(el) {
