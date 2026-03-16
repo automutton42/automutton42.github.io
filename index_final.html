@@ -101,14 +101,26 @@
       <a href="https://x.com/automutton42" target="_blank" class="btn-hero btn-hero-outline"><span>X / TWITTER</span></a>
     </div>
     <div class="hero-hashtags">
-      <span class="hero-hashtag" title="総合タグ">#automutton42 — 総合タグ</span>
-      <span class="hero-hashtag eli" title="ファンアートタグ">#artomutton42 — ファンアート</span>
-      <span class="hero-hashtag lema" title="ドールタグ">#kiroっ子 — kiroドール写真</span>
+      <div class="hashtag-block" onclick="copyTag(this, '#automutton42')">
+        <div class="hashtag-label">GENERAL</div>
+        <div class="hashtag-text">#automutton42</div>
+        <div class="hashtag-copy">コピー</div>
+      </div>
+      <div class="hashtag-block eli-ht" onclick="copyTag(this, '#artomutton42')">
+        <div class="hashtag-label">FAN ART</div>
+        <div class="hashtag-text">#artomutton42</div>
+        <div class="hashtag-copy">コピー</div>
+      </div>
+      <div class="hashtag-block lema-ht" onclick="copyTag(this, '#kiroっ子')">
+        <div class="hashtag-label">DOLL PHOTO</div>
+        <div class="hashtag-text">#kiroっ子</div>
+        <div class="hashtag-copy">コピー</div>
+      </div>
     </div>
   </div>
 
   <div class="hero-bg">
-    <a class="lightbox-trigger" onclick="document.getElementById('lb').classList.add('open')">
+    <a class="lightbox-trigger" href="#">
       <img src="assets/images/hero_click.jpeg" alt="Eli & Lema">
     </a>
   </div>
@@ -123,9 +135,9 @@
 
   <!-- タブ -->
   <div class="updates-tabs">
-    <button class="utab active" onclick="showTab('news', this)">NEWS</button>
-    <button class="utab" onclick="showTab('upcoming', this)">UPCOMING</button>
-    <button class="utab" onclick="showTab('blog', this)">BLOG</button>
+    <button class="utab active" data-tab="news">NEWS</button>
+    <button class="utab" data-tab="upcoming">UPCOMING</button>
+    <button class="utab" data-tab="blog">BLOG</button>
   </div>
 
   <!-- NEWS -->
@@ -459,9 +471,9 @@
 
 
 <!-- LIGHTBOX -->
-<div class="lightbox-overlay" id="lb" onclick="this.classList.remove('open')">
-  <button class="lightbox-close" onclick="event.stopPropagation(); document.getElementById('lb').classList.remove('open')">✕</button>
-  <img src="assets/images/hero_click.jpeg" alt="Eli & Lema" onclick="event.stopPropagation()">
+<div class="lightbox-overlay" id="lb" style="display:none;">
+  <button class="lightbox-close">✕</button>
+  <img src="assets/images/hero_click.jpeg" alt="Eli & Lema">
 </div>
 
 <!-- FOOTER -->
@@ -474,18 +486,73 @@
 </footer>
 
 <script>
-// タブ切り替え
-function showTab(name, btn) {
-  document.querySelectorAll('.updates-pane').forEach(function(p) { p.classList.add('hidden'); });
-  document.querySelectorAll('.utab').forEach(function(b) { b.classList.remove('active'); });
-  document.getElementById('tab-' + name).classList.remove('hidden');
-  btn.classList.add('active');
-}
-// ブログ展開
-function toggleBlog(el) {
-  el.classList.toggle('open');
-  var arrow = el.querySelector('.blog-arrow');
-  if (arrow) arrow.textContent = el.classList.contains('open') ? '▼' : '▶';
+// === タブ切り替え ===
+document.addEventListener('DOMContentLoaded', function() {
+  // タブボタンにイベントをバインド
+  document.querySelectorAll('.utab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var name = this.getAttribute('data-tab');
+      document.querySelectorAll('.updates-pane').forEach(function(p) {
+        p.style.display = 'none';
+      });
+      document.querySelectorAll('.utab').forEach(function(b) {
+        b.classList.remove('active');
+      });
+      var pane = document.getElementById('tab-' + name);
+      if (pane) pane.style.display = 'block';
+      this.classList.add('active');
+    });
+  });
+  // 初期状態
+  document.querySelectorAll('.updates-pane').forEach(function(p) {
+    p.style.display = 'none';
+  });
+  var first = document.getElementById('tab-news');
+  if (first) first.style.display = 'block';
+
+  // === ライトボックス ===
+  var trigger = document.querySelector('.lightbox-trigger');
+  var overlay = document.getElementById('lb');
+  if (trigger && overlay) {
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      overlay.style.display = 'flex';
+    });
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) overlay.style.display = 'none';
+    });
+    var closeBtn = overlay.querySelector('.lightbox-close');
+    if (closeBtn) closeBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      overlay.style.display = 'none';
+    });
+    var lbImg = overlay.querySelector('img');
+    if (lbImg) lbImg.addEventListener('click', function(e) { e.stopPropagation(); });
+  }
+
+  // === ブログ展開 ===
+  document.querySelectorAll('.blog-item').forEach(function(el) {
+    el.addEventListener('click', function() {
+      this.classList.toggle('open');
+      var arrow = this.querySelector('.blog-arrow');
+      if (arrow) arrow.textContent = this.classList.contains('open') ? '▼' : '▶';
+    });
+  });
+});
+
+// === タグコピー ===
+function copyTag(el, text) {
+  navigator.clipboard.writeText(text).then(function() {
+    var cp = el.querySelector('.hashtag-copy');
+    if (cp) { cp.textContent = 'コピー済！'; setTimeout(function(){ cp.textContent = 'コピー'; }, 1500); }
+  }).catch(function() {
+    // フォールバック
+    var ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    var cp = el.querySelector('.hashtag-copy');
+    if (cp) { cp.textContent = 'コピー済！'; setTimeout(function(){ cp.textContent = 'コピー'; }, 1500); }
+  });
 }
 </script>
 </body>

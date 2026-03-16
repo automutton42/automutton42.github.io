@@ -29,7 +29,7 @@ body {
 
 /* ── スキャンライン（明るい背景用） ── */
 body::before {
-  content: ''; position: fixed; inset: 0; z-index: 9998; pointer-events: none;
+  content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
   background: repeating-linear-gradient(
     0deg, transparent, transparent 3px,
     rgba(0,0,0,0.018) 3px, rgba(0,0,0,0.018) 4px
@@ -688,20 +688,37 @@ footer::before {
 }
 .lightbox-close:hover { opacity: 1; }
 
-/* ===== HASHTAGS ===== */
+/* ===== HASHTAG BLOCKS ===== */
 .hero-hashtags {
-  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px;
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px;
   opacity: 0; animation: fadeUp 0.6s 1.12s forwards;
 }
-.hero-hashtag {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 8px; letter-spacing: 0.15em; color: var(--muted);
-  padding: 4px 10px; border: 1px solid var(--line);
-  transition: color 0.2s, border-color 0.2s;
+.hashtag-block {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 10px 16px; border: 1px solid var(--line);
+  cursor: pointer; min-width: 130px;
+  background: var(--bg);
+  transition: border-color 0.2s, background 0.2s;
+  user-select: none;
 }
-.hero-hashtag:hover { color: var(--ink); border-color: var(--dim); }
-.hero-hashtag.eli  { border-color: var(--eli-mid); color: var(--eli); }
-.hero-hashtag.lema { border-color: var(--lema-mid); color: var(--lema); }
+.hashtag-block:hover { border-color: var(--dim); background: var(--bg2); }
+.hashtag-block.eli-ht  { border-left: 2px solid var(--eli); }
+.hashtag-block.lema-ht { border-left: 2px solid var(--lema); }
+.hashtag-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 7px; letter-spacing: 0.25em; color: var(--muted);
+}
+.hashtag-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px; letter-spacing: 0.08em; color: var(--ink);
+  font-weight: 500;
+}
+.hashtag-copy {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 7px; letter-spacing: 0.2em; color: var(--dim);
+  transition: color 0.2s;
+}
+.hashtag-block:hover .hashtag-copy { color: var(--muted); }
 
 /* ===== UPDATES ===== */
 .updates-tabs {
