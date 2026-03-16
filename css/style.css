@@ -83,7 +83,7 @@ nav::before {
 }
 .nav-logo img {
   width: 26px; height: 26px; object-fit: contain;
-  filter: grayscale(100%) brightness(0.3);
+  filter: none;
 }
 .nav-logo-name {
   font-family: 'Orbitron', sans-serif;
@@ -351,11 +351,11 @@ section { padding: 100px 64px; border-top: 1px solid var(--line); position: rela
 }
 .profile-card-img img {
   width: 100%; height: 100%; object-fit: contain; object-position: top center;
-  filter: grayscale(100%) contrast(1.1) brightness(0.7);
-  transition: filter 0.5s, transform 0.5s;
+  filter: none;
+  transition: transform 0.5s;
 }
-.card-eli:hover  .profile-card-img img { filter: grayscale(60%) contrast(1.05) brightness(0.85) sepia(0.2) hue-rotate(320deg); transform: scale(1.03); }
-.card-lema:hover .profile-card-img img { filter: grayscale(60%) contrast(1.05) brightness(0.85) sepia(0.2) hue-rotate(180deg); transform: scale(1.03); }
+.card-eli:hover  .profile-card-img img { filter: none; transform: scale(1.03); }
+.card-lema:hover .profile-card-img img { filter: none; transform: scale(1.03); }
 
 /* img の下グラデ */
 .profile-card-img::after {
@@ -575,7 +575,7 @@ footer::before {
   opacity: 0.3;
 }
 .footer-logo { display: flex; align-items: center; gap: 12px; }
-.footer-logo img { width: 20px; height: 20px; object-fit: contain; filter: grayscale(100%) brightness(0.3); opacity: 0.5; }
+.footer-logo img { width: 20px; height: 20px; object-fit: contain; filter: none; opacity: 0.7; }
 .footer-copy { font-family: 'Orbitron', sans-serif; font-size: 8px; color: var(--muted); letter-spacing: 0.15em; }
 
 /* ===== ACHIEVEMENTS ===== */
@@ -668,3 +668,97 @@ footer::before {
 
   footer { flex-direction: column; gap: 12px; text-align: center; padding: 28px 24px; }
 }
+
+/* ===== LIGHTBOX ===== */
+.lightbox-trigger { cursor: zoom-in; display: block; }
+.lightbox-overlay {
+  display: none; position: fixed; inset: 0; z-index: 9000;
+  background: rgba(0,0,0,0.88); align-items: center; justify-content: center;
+}
+.lightbox-overlay.open { display: flex; }
+.lightbox-overlay img {
+  max-width: 92vw; max-height: 92vh; object-fit: contain;
+  filter: none !important;
+}
+.lightbox-close {
+  position: fixed; top: 20px; right: 28px;
+  font-family: 'Orbitron', sans-serif; font-size: 22px;
+  color: #fff; cursor: pointer; z-index: 9001; background: none; border: none;
+  opacity: 0.7; transition: opacity 0.2s;
+}
+.lightbox-close:hover { opacity: 1; }
+
+/* ===== HASHTAGS ===== */
+.hero-hashtags {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px;
+  opacity: 0; animation: fadeUp 0.6s 1.12s forwards;
+}
+.hero-hashtag {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 8px; letter-spacing: 0.15em; color: var(--muted);
+  padding: 4px 10px; border: 1px solid var(--line);
+  transition: color 0.2s, border-color 0.2s;
+}
+.hero-hashtag:hover { color: var(--ink); border-color: var(--dim); }
+.hero-hashtag.eli  { border-color: var(--eli-mid); color: var(--eli); }
+.hero-hashtag.lema { border-color: var(--lema-mid); color: var(--lema); }
+
+/* ===== UPDATES ===== */
+.updates-tabs {
+  display: flex; gap: 2px; margin-bottom: 24px; max-width: 640px;
+}
+.utab {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px; letter-spacing: 0.25em;
+  padding: 10px 24px; cursor: pointer;
+  background: var(--bg); border: 1px solid var(--line);
+  color: var(--muted); transition: all 0.2s;
+}
+.utab:hover  { color: var(--ink); border-color: var(--dim); }
+.utab.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.updates-pane { max-width: 640px; }
+.updates-pane.hidden { display: none; }
+
+.update-item {
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--dim);
+  background: var(--bg);
+  margin-bottom: 2px;
+  transition: border-color 0.2s;
+}
+.update-item:hover { border-color: var(--dim); }
+
+.update-meta {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px 4px;
+}
+.update-date {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px; letter-spacing: 0.1em; color: var(--muted);
+}
+.update-tag {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 7px; letter-spacing: 0.2em; color: var(--muted);
+  border: 1px solid var(--line); padding: 2px 8px;
+}
+.update-tag.upcoming { border-color: var(--lema-mid); color: var(--lema); }
+.update-tag.eli-tag  { border-color: var(--eli-mid);  color: var(--eli); }
+.update-tag.blog-tag { border-color: var(--dim); }
+.blog-arrow {
+  margin-left: auto; font-size: 10px; color: var(--muted);
+  transition: color 0.2s;
+}
+
+.update-body { padding: 4px 20px 14px; }
+.update-title { font-size: 15px; color: var(--ink); }
+
+/* ブログ詳細（折りたたみ） */
+.blog-item { cursor: pointer; }
+.blog-item:hover .update-title { color: var(--ink); }
+.blog-detail {
+  display: none; margin-top: 12px;
+  padding-top: 14px; border-top: 1px solid var(--line);
+  font-size: 13px; line-height: 2.3; color: var(--ink2);
+}
+.blog-item.open .blog-detail { display: block; }

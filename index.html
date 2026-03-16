@@ -17,6 +17,7 @@
     <span class="nav-logo-name">automutton</span>
   </a>
   <div class="nav-links">
+    <a href="#updates">UPDATES</a>
     <a href="#about">ABOUT</a>
     <a href="#profile">PROFILE</a>
     <a href="#story">STORY</a>
@@ -33,6 +34,7 @@
 
 <div class="nav-drawer" id="drawer">
   <button class="nav-drawer-close" onclick="document.getElementById('drawer').classList.remove('open')">✕</button>
+  <a href="#updates"       onclick="document.getElementById('drawer').classList.remove('open')">UPDATES</a>
   <a href="#about"         onclick="document.getElementById('drawer').classList.remove('open')">ABOUT</a>
   <a href="#profile"       onclick="document.getElementById('drawer').classList.remove('open')">PROFILE</a>
   <a href="#story"         onclick="document.getElementById('drawer').classList.remove('open')">STORY</a>
@@ -97,10 +99,94 @@
       <a href="https://www.youtube.com/@automutton-elilema-1927" target="_blank" class="btn-hero btn-hero-outline"><span>YOUTUBE</span></a>
       <a href="https://x.com/automutton42" target="_blank" class="btn-hero btn-hero-outline"><span>X / TWITTER</span></a>
     </div>
+    <div class="hero-hashtags">
+      <span class="hero-hashtag">#automutton42</span>
+      <span class="hero-hashtag eli">#artomutton42</span>
+      <span class="hero-hashtag lema">#kiroっ子</span>
+    </div>
   </div>
 
   <div class="hero-bg">
-    <img src="assets/images/characters.jpeg" alt="Eli & Lema">
+    <a class="lightbox-trigger" onclick="document.getElementById('lb').classList.add('open')">
+      <img src="assets/images/hero_click.jpeg" alt="Eli & Lema" style="filter: grayscale(100%) contrast(1.08) brightness(0.75);">
+    </a>
+  </div>
+</section>
+
+<!-- UPDATES -->
+<section id="updates" class="bg2">
+  <div class="section-header">
+    <div class="section-label">UPDATES</div>
+    <div class="section-title">最新情報</div>
+  </div>
+
+  <!-- タブ -->
+  <div class="updates-tabs">
+    <button class="utab active" onclick="showTab('news')">NEWS</button>
+    <button class="utab" onclick="showTab('upcoming')">UPCOMING</button>
+    <button class="utab" onclick="showTab('blog')">BLOG</button>
+  </div>
+
+  <!-- NEWS -->
+  <div class="updates-pane" id="tab-news">
+    <div class="update-item">
+      <div class="update-meta">
+        <span class="update-date">2026 / 03 / 16</span>
+        <span class="update-tag">NEWS</span>
+      </div>
+      <div class="update-body">
+        <div class="update-title">ホームページ開設</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPCOMING -->
+  <div class="updates-pane hidden" id="tab-upcoming">
+    <div class="update-item">
+      <div class="update-meta">
+        <span class="update-date">2026 / 04 / 02</span>
+        <span class="update-tag upcoming">UPCOMING</span>
+      </div>
+      <div class="update-body">
+        <div class="update-title">YouTube 3周年記念日</div>
+      </div>
+    </div>
+    <div class="update-item">
+      <div class="update-meta">
+        <span class="update-date">2026 / 05 / 04</span>
+        <span class="update-tag upcoming">UPCOMING</span>
+      </div>
+      <div class="update-body">
+        <div class="update-title">文学フリマ東京42 参加</div>
+      </div>
+    </div>
+    <div class="update-item">
+      <div class="update-meta">
+        <span class="update-date">2026 / 05 〜 06</span>
+        <span class="update-tag eli-tag">ELI</span>
+      </div>
+      <div class="update-body">
+        <div class="update-title">V飲みっ！参加（エリ）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOG（クリックで詳細展開） -->
+  <div class="updates-pane hidden" id="tab-blog">
+    <div class="update-item blog-item" onclick="toggleBlog(this)">
+      <div class="update-meta">
+        <span class="update-date">2026 / 03 / 16</span>
+        <span class="update-tag blog-tag">BLOG</span>
+        <span class="blog-arrow">▶</span>
+      </div>
+      <div class="update-body">
+        <div class="update-title">ホームページをつくりました</div>
+        <div class="blog-detail">
+          <p>ここにブログの本文を書いてください。<br>改行も自由にできます。</p>
+        </div>
+      </div>
+    </div>
+    <!-- ブログ投稿を追加するときはこのブロックをコピーしてください -->
   </div>
 </section>
 
@@ -116,7 +202,7 @@
       <div class="profile-card">
         <div class="profile-card-colorbar"></div>
         <div class="profile-card-img">
-          <img src="assets/images/characters.jpeg" alt="Eli" style="object-position: 22% top;">
+          <img src="assets/images/eli_card.jpeg" alt="Eli" style="object-fit: cover; object-position: center top;">
         </div>
         <div class="profile-card-inner">
           <div class="profile-card-body">
@@ -131,6 +217,7 @@
             <div class="profile-links">
               <a href="https://x.com/eli503503" target="_blank" class="profile-link">X / TWITTER <span class="profile-link-arrow">→</span></a>
               <a href="https://www.twitch.tv/eli503503" target="_blank" class="profile-link">TWITCH <span class="profile-link-arrow">→</span></a>
+              <a href="https://www.amazon.co.jp/hz/wishlist/ls/2E8LOYE6P2J4V" target="_blank" class="profile-link">WISHLIST <span class="profile-link-arrow">→</span></a>
             </div>
           </div>
         </div>
@@ -141,7 +228,7 @@
       <div class="profile-card">
         <div class="profile-card-colorbar"></div>
         <div class="profile-card-img">
-          <img src="assets/images/characters.jpeg" alt="Lema" style="object-position: 78% top;">
+          <img src="assets/images/lema_card.png" alt="Lema" style="object-fit: cover; object-position: center top;">
         </div>
         <div class="profile-card-inner">
           <div class="profile-card-body">
@@ -156,6 +243,7 @@
             <div class="profile-links">
               <a href="https://x.com/lema404404" target="_blank" class="profile-link">X / TWITTER <span class="profile-link-arrow">→</span></a>
               <a href="https://www.twitch.tv/lema404" target="_blank" class="profile-link">TWITCH <span class="profile-link-arrow">→</span></a>
+              <a href="https://www.amazon.co.jp/hz/wishlist/ls/2SYUQBQJEKK9V" target="_blank" class="profile-link">WISHLIST <span class="profile-link-arrow">→</span></a>
             </div>
           </div>
         </div>
@@ -267,10 +355,10 @@
       </div>
     </div>
     <div class="history-item">
-      <div class="history-date">2026 / 03</div>
+      <div class="history-date">2026 / 03 / 09</div>
       <div class="history-dot"></div>
       <div class="history-body">
-        <div class="history-title">登録者数 500人達成</div>
+        <div class="history-title">チャンネル登録者数 500人達成</div>
       </div>
     </div>
   </div>
@@ -295,6 +383,10 @@
             <div class="link-left"><span class="link-label">X / TWITTER</span><span class="link-desc">@automutton42</span></div>
             <div class="link-arrow-box">→</div>
           </a>
+          <a href="https://sp.nicovideo.jp/user/130964447" target="_blank" class="link-item">
+            <div class="link-left"><span class="link-label">NICONICO</span><span class="link-desc">ボカロ曲・歌ってみた</span></div>
+            <div class="link-arrow-box">→</div>
+          </a>
         </div>
       </div>
       <div class="links-group">
@@ -312,7 +404,7 @@
         <div class="links-col-title">SHOP</div>
         <div class="links-stack">
           <a href="https://automutton.booth.pm" target="_blank" class="link-item">
-            <div class="link-left"><span class="link-label">BOOTH</span><span class="link-desc">メインショップ</span></div>
+            <div class="link-left"><span class="link-label">BOOTH</span><span class="link-desc">automutton / 欠落宴 / kiro / わたしの幽霊</span></div>
             <div class="link-arrow-box">→</div>
           </a>
           <a href="https://suzuri.jp/automutton" target="_blank" class="link-item">
@@ -364,8 +456,31 @@
   </div>
 </section>
 
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lb" onclick="this.classList.remove('open')">
+  <button class="lightbox-close" onclick="document.getElementById('lb').classList.remove('open')">✕</button>
+  <img src="assets/images/hero_click.jpeg" alt="Eli & Lema">
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">
     <img src="assets/images/logo.jpeg" alt="automutton">
     <sp
+<script>
+// タブ切り替え
+function showTab(name) {
+  document.querySelectorAll('.updates-pane').forEach(p => p.classList.add('hidden'));
+  document.querySelectorAll('.utab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+// ブログ展開
+function toggleBlog(el) {
+  el.classList.toggle('open');
+  const arrow = el.querySelector('.blog-arrow');
+  if (arrow) arrow.textContent = el.classList.contains('open') ? '▼' : '▶';
+}
+</script>
+</body>
+</html>
