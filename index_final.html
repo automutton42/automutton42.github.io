@@ -120,9 +120,7 @@
   </div>
 
   <div class="hero-bg">
-    <a class="lightbox-trigger" href="#">
-      <img src="assets/images/hero_click.jpeg" alt="Eli & Lema">
-    </a>
+    <img src="assets/images/hero_click.jpeg" alt="Eli & Lema" id="hero-img-trigger" style="cursor:zoom-in;">
   </div>
 </section>
 
@@ -471,9 +469,9 @@
 
 
 <!-- LIGHTBOX -->
-<div class="lightbox-overlay" id="lb" style="display:none;">
-  <button class="lightbox-close">✕</button>
-  <img src="assets/images/hero_click.jpeg" alt="Eli & Lema">
+<div id="lb" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.88); align-items:center; justify-content:center; cursor:zoom-out;">
+  <button id="lb-close" style="position:fixed; top:20px; right:28px; font-size:22px; color:#fff; cursor:pointer; z-index:10000; background:none; border:none; opacity:0.8; font-family:Orbitron,sans-serif;">✕</button>
+  <img src="assets/images/characters.jpeg" alt="Eli & Lema" style="max-width:92vw; max-height:92vh; object-fit:contain; cursor:default;">
 </div>
 
 <!-- FOOTER -->
@@ -511,24 +509,21 @@ document.addEventListener('DOMContentLoaded', function() {
   if (first) first.style.display = 'block';
 
   // === ライトボックス ===
-  var trigger = document.querySelector('.lightbox-trigger');
-  var overlay = document.getElementById('lb');
-  if (trigger && overlay) {
-    trigger.addEventListener('click', function(e) {
-      e.preventDefault();
-      overlay.style.display = 'flex';
-    });
-    overlay.addEventListener('click', function(e) {
-      if (e.target === overlay) overlay.style.display = 'none';
-    });
-    var closeBtn = overlay.querySelector('.lightbox-close');
-    if (closeBtn) closeBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      overlay.style.display = 'none';
-    });
-    var lbImg = overlay.querySelector('img');
-    if (lbImg) lbImg.addEventListener('click', function(e) { e.stopPropagation(); });
-  }
+  var heroImg = document.getElementById('hero-img-trigger');
+  var lb = document.getElementById('lb');
+  var lbClose = document.getElementById('lb-close');
+
+  function openLb()  { lb.style.display = 'flex'; }
+  function closeLb() { lb.style.display = 'none'; }
+
+  if (heroImg) heroImg.addEventListener('click', openLb);
+  if (lbClose) lbClose.addEventListener('click', function(e) { e.stopPropagation(); closeLb(); });
+  if (lb) lb.addEventListener('click', function(e) {
+    if (e.target === lb) closeLb();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeLb();
+  });
 
   // === ブログ展開 ===
   document.querySelectorAll('.blog-item').forEach(function(el) {
