@@ -356,17 +356,37 @@ section { padding: 100px 64px; border-top: 1px solid var(--line); position: rela
 .card-eli:hover  > .profile-card { box-shadow: 0 0 40px rgba(192,40,42,0.2), inset 0 0 80px rgba(192,40,42,0.04); }
 .card-lema:hover > .profile-card { box-shadow: 0 0 40px rgba(37,85,160,0.2), inset 0 0 80px rgba(37,85,160,0.04); }
 
+/* プロフィール画像コンテナ：高さ制限しない */
 .profile-card-img {
-  width: 100%; aspect-ratio: 3/4; overflow: hidden; background: var(--bg3);
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg3);
   position: relative;
 }
-.profile-card-img img {
-  width: 100%; height: 100%; object-fit: contain; object-position: top center;
+/* PC：縦長固定 */
+@media (min-width: 769px) {
+  .profile-card-img {
+    aspect-ratio: 3/4;
+  }
+}
+/* 共通画像スタイル */
+.profile-img {
+  display: block;
+  width: 100%;
+  height: auto;
   filter: none;
   transition: transform 0.5s;
 }
-.card-eli:hover  .profile-card-img img { filter: none; transform: scale(1.03); }
-.card-lema:hover .profile-card-img img { filter: none; transform: scale(1.03); }
+/* PC：コンテナ内にfitさせる */
+@media (min-width: 769px) {
+  .profile-img {
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+}
+.card-eli:hover  .profile-img { transform: scale(1.03); }
+.card-lema:hover .profile-img { transform: scale(1.03); }
 
 /* img の下グラデ */
 .profile-card-img::after {
@@ -670,18 +690,7 @@ footer::before {
   section { padding: 72px 24px; }
 
   .profile-grid { grid-template-columns: 1fr; gap: 2px; }
-  .profile-card-img {
-    aspect-ratio: unset;
-    height: auto;
-    overflow: visible;
-  }
-  .profile-card-img img {
-    width: 100%;
-    height: auto;
-    object-fit: unset;
-    object-position: unset;
-    display: block;
-  }
+  .profile-card-img { aspect-ratio: unset; overflow: visible; }
   .profile-card-img::after { display: none; }
 
   .story-grid { grid-template-columns: 1fr; }
