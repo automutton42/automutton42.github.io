@@ -690,8 +690,19 @@ footer::before {
   section { padding: 72px 24px; }
 
   .profile-grid { grid-template-columns: 1fr; gap: 2px; }
-  .profile-card-img { aspect-ratio: unset; overflow: visible; }
+  .profile-card-img {
+    aspect-ratio: unset;
+    overflow: hidden;
+    height: 72vw;
+    max-height: 360px;
+  }
   .profile-card-img::after { display: none; }
+  .profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
 
   .story-grid { grid-template-columns: 1fr; }
 
