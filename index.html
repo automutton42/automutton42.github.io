@@ -1,6 +1,371 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>automutton</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Shippori+Mincho:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
 <body>
-<h1>Hello World</h1>
-</body>
-</html>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <img src="assets/images/logo.jpeg" alt="automutton">
+    <span class="nav-logo-name">automutton</span>
+  </a>
+  <div class="nav-links">
+    <a href="#about">ABOUT</a>
+    <a href="#profile">PROFILE</a>
+    <a href="#story">STORY</a>
+    <a href="#schedule">SCHEDULE</a>
+    <a href="#achievements">ACHIEVEMENTS</a>
+    <a href="#history">HISTORY</a>
+    <a href="#links">LINKS</a>
+    <a href="#contact">CONTACT</a>
+  </div>
+  <button class="nav-burger" onclick="document.getElementById('drawer').classList.toggle('open')" aria-label="menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-drawer" id="drawer">
+  <button class="nav-drawer-close" onclick="document.getElementById('drawer').classList.remove('open')">✕</button>
+  <a href="#about"         onclick="document.getElementById('drawer').classList.remove('open')">ABOUT</a>
+  <a href="#profile"       onclick="document.getElementById('drawer').classList.remove('open')">PROFILE</a>
+  <a href="#story"         onclick="document.getElementById('drawer').classList.remove('open')">STORY</a>
+  <a href="#schedule"      onclick="document.getElementById('drawer').classList.remove('open')">SCHEDULE</a>
+  <a href="#achievements"  onclick="document.getElementById('drawer').classList.remove('open')">ACHIEVEMENTS</a>
+  <a href="#history"       onclick="document.getElementById('drawer').classList.remove('open')">HISTORY</a>
+  <a href="#links"         onclick="document.getElementById('drawer').classList.remove('open')">LINKS</a>
+  <a href="#contact"       onclick="document.getElementById('drawer').classList.remove('open')">CONTACT</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="about">
+  <div class="hero-bg-grad"></div>
+  <!-- 右下装飾SVG -->
+  <div class="hero-deco-lines">
+    <svg viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="320" y1="0" x2="0" y2="320" stroke="black" stroke-width="0.5" opacity="0.12"/>
+      <line x1="320" y1="60" x2="60" y2="320" stroke="black" stroke-width="0.5" opacity="0.12"/>
+      <line x1="320" y1="120" x2="120" y2="320" stroke="black" stroke-width="0.5" opacity="0.12"/>
+      <line x1="320" y1="180" x2="180" y2="320" stroke="black" stroke-width="0.5" opacity="0.12"/>
+      <rect x="240" y="240" width="60" height="60" stroke="black" stroke-width="0.5" opacity="0.12"/>
+      <rect x="255" y="255" width="30" height="30" stroke="black" stroke-width="0.5" opacity="0.12"/>
+      <circle cx="270" cy="270" r="8" stroke="black" stroke-width="0.5" opacity="0.12"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-sys">
+      <div class="hero-sys-line">VIRTUAL LIVER / CREATOR UNIT</div>
+      <div class="hero-sys-id">SYS:001 — ONLINE</div>
+    </div>
+    <h1 class="hero-name">automutton</h1>
+    <div class="hero-name-rule">
+      <span></span>
+      <span class="hero-name-rule-dot"></span>
+    </div>
+    <p class="hero-tagline">「Eli, Eli, Lema Sabachthani?」</p>
+    <div class="hero-concept">
+      <span class="hero-concept-tag">サイバー</span>
+      <span class="hero-concept-tag">耽美</span>
+      <span class="hero-concept-tag">デウスエクスマキナ</span>
+    </div>
+    <p class="hero-desc">
+      エリとレマによる<br>
+      Virtualライバー兼クリエイターユニット。
+    </p>
+    <div class="hero-activities">
+      <div class="hero-act-title">ACTIVITIES</div>
+      <div class="hero-act-list">
+        <span class="hero-act-tag">ポエトリーリーディング</span>
+        <span class="hero-act-tag">カスタムドール制作</span>
+        <span class="hero-act-tag">ライブ配信</span>
+        <span class="hero-act-tag">同時視聴</span>
+        <span class="hero-act-tag">ゲーム実況</span>
+        <span class="hero-act-tag">イラスト</span>
+        <span class="hero-act-tag">詩</span>
+        <span class="hero-act-tag">ボカロ曲</span>
+        <span class="hero-act-tag">歌ってみた</span>
+      </div>
+    </div>
+    <div class="hero-sns">
+      <a href="https://www.youtube.com/@automutton-elilema-1927" target="_blank" class="btn-hero btn-hero-outline"><span>YOUTUBE</span></a>
+      <a href="https://x.com/automutton42" target="_blank" class="btn-hero btn-hero-outline"><span>X / TWITTER</span></a>
+    </div>
+  </div>
+
+  <div class="hero-bg">
+    <img src="assets/images/characters.jpeg" alt="Eli & Lema">
+  </div>
+</section>
+
+<!-- PROFILE -->
+<section id="profile" class="bg2">
+  <div class="section-header">
+    <div class="section-label">PROFILE</div>
+    <div class="section-title">Characters</div>
+  </div>
+  <div class="profile-grid">
+
+    <div class="card-eli">
+      <div class="profile-card">
+        <div class="profile-card-colorbar"></div>
+        <div class="profile-card-img">
+          <img src="assets/images/characters.jpeg" alt="Eli" style="object-position: 22% top;">
+        </div>
+        <div class="profile-card-inner">
+          <div class="profile-card-body">
+            <div class="profile-card-name">Eli</div>
+            <div class="profile-card-sub">エリ &nbsp;/&nbsp; 絵を描く人形</div>
+            <div class="profile-table">
+              <div class="profile-row"><span class="profile-key">BIRTHDAY</span><span class="profile-val">9月1日</span></div>
+              <div class="profile-row"><span class="profile-key">LIKES</span><span class="profile-val">辛いもの</span></div>
+              <div class="profile-row"><span class="profile-key">DISLIKES</span><span class="profile-val">虫</span></div>
+              <div class="profile-row"><span class="profile-key">TROUBLE</span><span class="profile-val">眠れないこと</span></div>
+            </div>
+            <div class="profile-links">
+              <a href="https://x.com/eli503503" target="_blank" class="profile-link">X / TWITTER <span class="profile-link-arrow">→</span></a>
+              <a href="https://www.twitch.tv/eli503503" target="_blank" class="profile-link">TWITCH <span class="profile-link-arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-lema">
+      <div class="profile-card">
+        <div class="profile-card-colorbar"></div>
+        <div class="profile-card-img">
+          <img src="assets/images/characters.jpeg" alt="Lema" style="object-position: 78% top;">
+        </div>
+        <div class="profile-card-inner">
+          <div class="profile-card-body">
+            <div class="profile-card-name">Lema</div>
+            <div class="profile-card-sub">レマ &nbsp;/&nbsp; 詩を書く人形</div>
+            <div class="profile-table">
+              <div class="profile-row"><span class="profile-key">BIRTHDAY</span><span class="profile-val">12月14日</span></div>
+              <div class="profile-row"><span class="profile-key">LIKES</span><span class="profile-val">甘いもの</span></div>
+              <div class="profile-row"><span class="profile-key">DISLIKES</span><span class="profile-val">幽霊</span></div>
+              <div class="profile-row"><span class="profile-key">TROUBLE</span><span class="profile-val">寝ても寝ても眠いこと</span></div>
+            </div>
+            <div class="profile-links">
+              <a href="https://x.com/lema404404" target="_blank" class="profile-link">X / TWITTER <span class="profile-link-arrow">→</span></a>
+              <a href="https://www.twitch.tv/lema404" target="_blank" class="profile-link">TWITCH <span class="profile-link-arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- STORY -->
+<section id="story">
+  <div class="section-header">
+    <div class="section-label">STORY</div>
+    <div class="section-title">Archives</div>
+  </div>
+  <div class="story-grid">
+    <a href="https://automutton42.fanbox.cc/posts/9608760" target="_blank" class="story-card clickable">
+      <div class="story-card-img"><img src="assets/images/story1.png" alt="Story 01"></div>
+      <div class="story-card-footer">
+        <div><div class="sc-ep">EPISODE 01</div><div class="sc-title">Story</div></div>
+        <span class="sc-arrow">→</span>
+      </div>
+    </a>
+    <div class="story-card coming">
+      <div class="story-card-img"><img src="assets/images/story2.png" alt="Now Loading"></div>
+      <div class="story-card-footer">
+        <div><div class="sc-ep">EPISODE 02</div><div class="sc-title">Story</div></div>
+        <span class="coming-badge">4/2 追加予定</span>
+      </div>
+    </div>
+    <a href="https://automutton42.fanbox.cc/tags/Story" target="_blank" class="story-card clickable">
+      <div class="story-card-text-only">
+        <div class="story-ring"><span>···</span></div>
+        <div class="story-all-label">ALL EPISODES</div>
+      </div>
+      <div class="story-card-footer">
+        <div><div class="sc-ep">FANBOX</div><div class="sc-title">すべてのストーリーを見る</div></div>
+        <span class="sc-arrow">→</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="schedule" class="bg2">
+  <div class="section-header">
+    <div class="section-label">SCHEDULE</div>
+    <div class="section-title">Regular Streams</div>
+  </div>
+  <div class="schedule-wrap">
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th style="color:var(--eli)">ELI</th>
+          <th style="color:var(--lema)">LEMA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="td-day">MON</td><td class="td-stream empty">—</td><td class="td-stream lema"><span class="stream-time">06:30 —</span><span class="stream-name lema">LEMA</span></td></tr>
+        <tr><td class="td-day">TUE</td><td class="td-stream eli"><span class="stream-time">19:00 —</span><span class="stream-name eli">ELI</span></td><td class="td-stream lema"><span class="stream-time">06:30 —</span><span class="stream-name lema">LEMA</span></td></tr>
+        <tr><td class="td-day">WED</td><td class="td-stream empty">—</td><td class="td-stream lema"><span class="stream-time">06:30 —</span><span class="stream-name lema">LEMA</span></td></tr>
+        <tr><td class="td-day">THU</td><td class="td-stream eli"><span class="stream-time">19:00 —</span><span class="stream-name eli">ELI</span></td><td class="td-stream lema"><span class="stream-time">06:30 —</span><span class="stream-name lema">LEMA</span></td></tr>
+        <tr><td class="td-day">FRI</td><td class="td-stream empty">—</td><td class="td-stream lema"><span class="stream-time">06:30 —</span><span class="stream-name lema">LEMA</span></td></tr>
+        <tr><td class="td-day">SAT</td><td class="td-stream empty">—</td><td class="td-stream empty">—</td></tr>
+        <tr><td class="td-day">SUN</td><td class="td-stream empty">—</td><td class="td-stream empty">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="schedule-note">※ 固定配信以外の配信はXでお知らせします。</p>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements" class="bg2">
+  <div class="section-header">
+    <div class="section-label">ACHIEVEMENTS</div>
+    <div class="section-title">実績</div>
+  </div>
+  <div class="achievements-grid">
+    <!-- ここに実績を追加してください -->
+    <!-- 例：
+    <div class="achievement-item">
+      <div class="achievement-tag">EVENT</div>
+      <div class="achievement-body">
+        <div class="achievement-title">文学フリマ参加</div>
+        <div class="achievement-date">2025 / 00</div>
+      </div>
+    </div>
+    -->
+    <div class="achievements-empty">
+      <span class="achievements-empty-icon">[ — ]</span>
+      <span class="achievements-empty-text">Coming Soon</span>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <div class="section-header">
+    <div class="section-label">HISTORY</div>
+    <div class="section-title">活動記録</div>
+  </div>
+  <div class="history-timeline">
+    <div class="history-item">
+      <div class="history-date">2023 / 04 / 02</div>
+      <div class="history-dot"></div>
+      <div class="history-body">
+        <div class="history-title">YouTube 活動開始</div>
+      </div>
+    </div>
+    <div class="history-item">
+      <div class="history-date">2026 / 03</div>
+      <div class="history-dot"></div>
+      <div class="history-body">
+        <div class="history-title">登録者数 500人達成</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LINKS -->
+<section id="links">
+  <div class="section-header">
+    <div class="section-label">LINKS</div>
+    <div class="section-title">External</div>
+  </div>
+  <div class="links-section-grid">
+    <div>
+      <div class="links-group">
+        <div class="links-col-title">SNS</div>
+        <div class="links-stack">
+          <a href="https://www.youtube.com/@automutton-elilema-1927" target="_blank" class="link-item">
+            <div class="link-left"><span class="link-label">YOUTUBE</span><span class="link-desc">automutton</span></div>
+            <div class="link-arrow-box">→</div>
+          </a>
+          <a href="https://x.com/automutton42" target="_blank" class="link-item">
+            <div class="link-left"><span class="link-label">X / TWITTER</span><span class="link-desc">@automutton42</span></div>
+            <div class="link-arrow-box">→</div>
+          </a>
+        </div>
+      </div>
+      <div class="links-group">
+        <div class="links-col-title">SUPPORT</div>
+        <div class="links-stack">
+          <a href="https://automutton42.fanbox.cc" target="_blank" class="link-item">
+            <div class="link-left"><span class="link-label">FANBOX</span><span class="link-desc">ファンコミュニティ・支援</span></div>
+            <div class="link-arrow-box">→</div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="links-group">
+        <div class="links-col-title">SHOP</div>
+        <div class="links-stack">
+          <a href="https://automutton.booth.pm" target="_blank" class="link-item">
+            <div class="link-left"><span class="link-label">BOOTH</span><span class="link-desc">メインショップ</span></div>
+            <div class="link-arrow-box">→</div>
+          </a>
+          <a href="https://suzuri.jp/automutton" target="_blank" class="link-item">
+            <div class="link-left"><span class="link-label">SUZURI</span><span class="link-desc">羊グッズ専売</span></div>
+            <div class="link-arrow-box">→</div>
+          </a>
+        </div>
+      </div>
+      <div class="links-group">
+        <div class="links-col-title">GUIDELINE</div>
+        <div class="links-stack">
+          <a href="https://automutton42.fanbox.cc/posts/11365215" target="_blank" class="link-item">
+            <div class="link-left"><span class="link-label">FAN ART</span><span class="link-desc">ファンアートガイドライン</span></div>
+            <div class="link-arrow-box">→</div>
+          </a>
+          <a href="https://automutton42.fanbox.cc/posts/11364835" target="_blank" class="link-item">
+            <div class="link-left"><span class="link-label">PRESENT / LETTER</span><span class="link-desc">プレゼント・ファンレター</span></div>
+            <div class="link-arrow-box">→</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="bg2">
+  <div class="section-header">
+    <div class="section-label">CONTACT</div>
+    <div class="section-title">Reach Us</div>
+  </div>
+  <div class="contact-grid">
+    <a href="https://x.com/automutton_pjt" target="_blank" class="contact-item">
+      <div class="contact-left">
+        <span class="contact-method">X / DM</span>
+        <span class="contact-name">機械羊製造所</span>
+        <span class="contact-handle">@automutton_pjt</span>
+      </div>
+      <span class="contact-arrow">→</span>
+    </a>
+    <a href="/cdn-cgi/l/email-protection#b4d5c1c0dbd9c1c0c0dbdac4c6dbded1d7c0f4d3d9d5ddd89ad7dbd9" class="contact-item">
+      <div class="contact-left">
+        <span class="contact-method">EMAIL</span>
+        <span class="contact-name">お仕事・ご依頼</span>
+        <span class="contact-handle"><span class="__cf_email__" data-cfemail="741501001b190100001b1a04061b1e111700341319151d185a171b19">[email&#160;protected]</span></span>
+      </div>
+      <span class="contact-arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <img src="assets/images/logo.jpeg" alt="automutton">
+    <sp
