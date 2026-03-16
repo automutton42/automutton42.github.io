@@ -123,9 +123,9 @@
 
   <!-- タブ -->
   <div class="updates-tabs">
-    <button class="utab active" onclick="showTab('news')">NEWS</button>
-    <button class="utab" onclick="showTab('upcoming')">UPCOMING</button>
-    <button class="utab" onclick="showTab('blog')">BLOG</button>
+    <button class="utab active" onclick="showTab('news', this)">NEWS</button>
+    <button class="utab" onclick="showTab('upcoming', this)">UPCOMING</button>
+    <button class="utab" onclick="showTab('blog', this)">BLOG</button>
   </div>
 
   <!-- NEWS -->
@@ -457,29 +457,34 @@
   </div>
 </section>
 
+
 <!-- LIGHTBOX -->
 <div class="lightbox-overlay" id="lb" onclick="this.classList.remove('open')">
-  <button class="lightbox-close" onclick="document.getElementById('lb').classList.remove('open')">✕</button>
-  <img src="assets/images/hero_click.jpeg" alt="Eli & Lema">
+  <button class="lightbox-close" onclick="event.stopPropagation(); document.getElementById('lb').classList.remove('open')">✕</button>
+  <img src="assets/images/hero_click.jpeg" alt="Eli & Lema" onclick="event.stopPropagation()">
 </div>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">
     <img src="assets/images/favicon.png" alt="automutton" style="filter:none;">
-    <sp
+    <span class="footer-copy">automutton</span>
+  </div>
+  <div class="footer-copy">© 2026 automutton. ALL RIGHTS RESERVED.</div>
+</footer>
+
 <script>
 // タブ切り替え
-function showTab(name) {
-  document.querySelectorAll('.updates-pane').forEach(p => p.classList.add('hidden'));
-  document.querySelectorAll('.utab').forEach(b => b.classList.remove('active'));
+function showTab(name, btn) {
+  document.querySelectorAll('.updates-pane').forEach(function(p) { p.classList.add('hidden'); });
+  document.querySelectorAll('.utab').forEach(function(b) { b.classList.remove('active'); });
   document.getElementById('tab-' + name).classList.remove('hidden');
-  event.target.classList.add('active');
+  btn.classList.add('active');
 }
 // ブログ展開
 function toggleBlog(el) {
   el.classList.toggle('open');
-  const arrow = el.querySelector('.blog-arrow');
+  var arrow = el.querySelector('.blog-arrow');
   if (arrow) arrow.textContent = el.classList.contains('open') ? '▼' : '▶';
 }
 </script>
