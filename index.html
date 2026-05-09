@@ -133,13 +133,13 @@
 
   <!-- タブ -->
   <div class="updates-tabs">
-    <button class="utab active" data-tab="news">NEWS</button>
-    <button class="utab" data-tab="upcoming">UPCOMING</button>
+    <button class="utab" data-tab="news">NEWS</button>
+    <button class="utab active" data-tab="upcoming">UPCOMING</button>
     <button class="utab" data-tab="blog">BLOG</button>
   </div>
 
   <!-- NEWS -->
-  <div class="updates-pane" id="tab-news">
+  <div class="updates-pane hidden" id="tab-news">
     <div class="update-item">
       <div class="update-meta">
         <span class="update-date">2026 / 03 / 16</span>
@@ -152,7 +152,7 @@
   </div>
 
   <!-- UPCOMING -->
-  <div class="updates-pane hidden" id="tab-upcoming">
+  <div class="updates-pane" id="tab-upcoming">
     <div class="update-item">
       <div class="update-meta">
         <span class="update-date">2026 / 05 〜 06</span>
@@ -503,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.updates-pane').forEach(function(p) {
     p.style.display = 'none';
   });
-  var first = document.getElementById('tab-news');
+  var first = document.getElementById('tab-upcoming');
   if (first) first.style.display = 'block';
 
   // === ブログ展開 ===
