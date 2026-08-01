@@ -803,6 +803,7 @@ footer::before {
 }
 .update-tag.upcoming { border-color: var(--lema-mid); color: var(--lema); }
 .update-tag.eli-tag  { border-color: var(--eli-mid);  color: var(--eli); }
+.update-tag.lema-tag { border-color: var(--lema-mid); color: var(--lema); }
 .update-tag.blog-tag { border-color: var(--dim); }
 .blog-arrow {
   margin-left: auto; font-size: 10px; color: var(--muted);
