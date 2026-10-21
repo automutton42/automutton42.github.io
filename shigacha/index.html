@@ -1,7 +1,9 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>詩ガチャ</title>
-<style>body{font-family:serif;max-width:480px;margin:auto;padding:16px;text-align:center}
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hina+Mincho&family=Yuji+Mai&family=Yuji+Syuku&family=Shippori+Mincho&family=Zen+Old+Mincho&family=Kaisei+Opti&display=swap" rel="stylesheet">
+<style>body{font-family:'Hina Mincho',serif;max-width:480px;margin:auto;padding:16px;text-align:center}
 button{width:100%;font-size:18px;margin:6px 0;padding:14px;box-sizing:border-box;font-family:inherit}
 #g{font-size:26px;padding:28px}#log{font-size:12px;white-space:pre-wrap;text-align:left;color:#888}
 canvas{border:1px solid #999;max-width:100%;margin-top:12px}</style></head><body>
@@ -24,19 +26,13 @@ const P=[
 const U='0000ff00-0000-1000-8000-00805f9b34fb';
 const $=i=>document.getElementById(i),Z=ms=>new Promise(r=>setTimeout(r,ms));
 let D,C,last=-1,done=null;const L=x=>$('log').textContent=x+'\n'+$('log').textContent;
-const W=384,LW=320,H=240,PAD=12;
+const FONTS=['Hina Mincho','Yuji Mai','Yuji Syuku','Shippori Mincho','Zen Old Mincho','Kaisei Opti'];
+const W=384,LW=320,H=240,PAD=12;let FF;
 function wrap(g,t,max){const o=[];for(const r of t.split('\n')){let l='';
 for(const ch of r){if(g.measureText(l+ch).width>max&&l){o.push(l);l=ch}else l+=ch}o.push(l)}return o}
 function R(t){const v=$('v'),g=v.getContext('2d');v.width=W;v.height=H;
 g.fillStyle='#fff';g.fillRect(0,0,W,H);let S=40,ls,lh;
-for(;S>=12;S--){g.font=S+'px serif';ls=wrap(g,t,LW-PAD*2);lh=Math.round(S*1.5);
-if(ls.length*lh<=H-PAD*2)break}
-g.fillStyle='#000';g.textAlign='center';g.textBaseline='middle';
-const top=(H-ls.length*lh)/2;ls.forEach((l,i)=>g.fillText(l,W/2,top+lh*i+lh/2))}
-function B(){const d=$('v').getContext('2d').getImageData(0,0,W,H).data,o=new Uint8Array(48*H);
-for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=(y*W+x)*4;
-if(d[i]*.299+d[i+1]*.587+d[i+2]*.114<128)o[y*48+(x>>3)]|=0x80>>(x&7)}return o}
-async function w(b){await C.writeValue(new Uint8Array(b))}
+for(;S>=12;S--){g.font=S+'px '+FF;ls=wrap(g,t,LW-PAD*2);lh=Math.round(S*1.5);
 if(ls.length*lh<=H-PAD*2)break}
 g.fillStyle='#000';g.textAlign='center';g.textBaseline='middle';
 const top=(H-ls.length*lh)/2;ls.forEach((l,i)=>g.fillText(l,W/2,top+lh*i+lh/2))}
@@ -55,12 +51,14 @@ D.addEventListener('gattserverdisconnected',()=>{$('g').disabled=true;$('c').tex
 $('g').disabled=false;$('c').textContent='接続中: '+(D.name||'');L('接続しました')}catch(e){L('接続エラー: '+e.message)}};
 $('g').onclick=async()=>{const b=$('g');b.disabled=true;b.textContent='印刷中…';
 try{let i;do{i=Math.floor(Math.random()*P.length)}while(P.length>1&&i==last);last=i;
+const fn=FONTS[Math.floor(Math.random()*FONTS.length)];FF='"'+fn+'",serif';
+try{await document.fonts.load('32px '+FF,P[i])}catch(e){}
 R(P[i]);const r=B();
 await w([27,78,13,5]);await Z(30);await w([27,78,4,15]);await Z(30);await w([31,17,10]);await Z(30);
 await w([29,118,48,0,48,0,H&255,H>>8]);
 for(let k=0;k<r.length;k+=128){await w(r.subarray(k,k+128));await Z(20)}
 await Z(300);const fin=new Promise(res=>{done=res;setTimeout(res,15000)});
-await w([31,240,5,0,31,240,3,0]);await fin;done=null;L('印刷しました: '+(i+1)+'番')}
+await w([31,240,5,0,31,240,3,0]);await fin;done=null;L('印刷しました: '+(i+1)+'番 / '+fn)}
 catch(e){L('印刷エラー: '+e.message)}
 b.textContent='ガチャを回す';b.disabled=!(D&&D.gatt.connected)};
 L('準備完了 / Web Bluetooth: '+(navigator.bluetooth?'あり':'なし'));
