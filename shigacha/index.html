@@ -1,28 +1,45 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>M110 印刷テスト</title>
-<style>
-  :root {
-    --bg: #f7f7f5; --fg: #1a1a1a; --sub: #666; --line: #d4d4d0;
-    --btn: #2b2b2b; --btn-fg: #fff; --ok: #1f7a3a; --ng: #b3261e; --paper: #fff;
-    color-scheme: light;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #161616; --fg: #ececec; --sub: #9a9a9a; --line: #3a3a3a;
-      --btn: #ececec; --btn-fg: #161616; --ok: #5cc27d; --ng: #ff8a80; --paper: #fff;
-      color-scheme: dark;
-    }
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--fg);
-    font-family: -apple-system, "Hiragino Sans", sans-serif; font-size: 16px; line-height: 1.6; }
-  main { max-width: 520px; margin: 0 auto; padding: 20px 16px 48px; }
-  h1 { font-size: 20px; margin: 0 0 4px; }
-  p.lead { color: var(--sub); margin: 0 0 20px; font-size: 14px; }
-  label { display: block; font-size: 14px; color: var(--sub); margin: 14px 0 4px; }
-  textarea, input, select { width: 100%; font: inherit; color: var(--fg); background: transparent;
-    border: 1px solid var(--line);​​​​​​​​​​​​​​​​
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>詩ガチャ テスト</title>
+<style>body{font-family:sans-serif;max-width:480px;margin:auto;padding:16px}
+textarea,input,select,button{width:100%;font-size:16px;margin:4px 0;padding:8px;box-sizing:border-box}
+button{padding:14px;font-weight:bold}#log{font-size:12px;white-space:pre-wrap}canvas{border:1px solid #999;max-width:100%}</style></head><body>
+<h3>M110 印刷テスト</h3>
+<textarea id="t">テスト印刷
+機械羊製造所</textarea>
+幅mm<input id="w" type="number" value="40">高さmm<input id="h" type="number" value="30">
+文字px<input id="s" type="number" value="32">
+<select id="m"><option value="10">ギャップ付き</option><option value="11">連続紙</option><option value="38">黒マーク</option></select>
+<button id="c">プリンタに接続</button><button id="p" disabled>印刷</button>
+<canvas id="v"></canvas><div id="log"></div>
+<script>
+const U=['0000ff00-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000ae30-0000-1000-8000-00805f9b34fb','49535343-fe7d-4ae5-8fa9-9fafd205e455'];
+const $=i=>document.getElementById(i),Z=ms=>new Promise(r=>setTimeout(r,ms));
+let D,C;const L=x=>$('log').textContent+=x+'\n';
+const px=mm=>Math.ceil(Math.round(mm*8)/8)*8;
+function R(){const v=$('v'),g=v.getContext('2d'),W=Math.min(px(+$('w').value||40),384),
+hm=+$('h').value||0,ct=$('m').value=='11'||hm<=0,S=+$('s').value||32,lh=Math.round(S*1.4),F=S+'px serif';
+g.font=F;const ls=[];for(const r of $('t').value.split('\n')){let l='';
+for(const ch of r){if(g.measureText(l+ch).width>W-16&&l){ls.push(l);l=ch}else l+=ch}ls.push(l)}
+const th=ls.length*lh,H=ct?Math.ceil((th+16)/8)*8:px(hm);v.width=W;v.height=H;
+g.fillStyle='#fff';g.fillRect(0,0,W,H);g.fillStyle='#000';g.font=F;g.textAlign='center';g.textBaseline='middle';
+const tp=ct?8:Math.max(8,(H-th)/2);ls.forEach((l,i)=>g.fillText(l,W/2,tp+lh*i+lh/2));return[W,H]}
+function B(W,H){const d=$('v').getContext('2d').getImageData(0,0,W,H).data,wb=W/8,o=new Uint8Array(wb*H);
+for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=(y*W+x)*4;
+if(d[i]*.299+d[i+1]*.587+d[i+2]*.114<128)o[y*wb+(x>>3)]|=0x80>>(x&7)}return[o,wb]}
+async function w(b){b=new Uint8Array(b);
+if(C.properties.writeWithoutResponse&&C.writeValueWithoutResponse)await C.writeValueWithoutResponse(b);else await C.writeValue(b)}
+$('c').onclick=async()=>{if(!navigator.bluetooth){L('Web Bluetoothなし。Bluefyで開く');return}
+try{D=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:U});L('選択:'+(D.name||'?'));
+const sv=await D.gatt.connect();L('接続OK');
+try{C=await(await sv.getPrimaryService(U[0])).getCharacteristic('0000ff02-0000-1000-8000-00805f9b34fb')}
+catch(e){L('ff02なし:'+e.message);for(const u of U){try{for(const c of await(await sv.getPrimaryService(u)).getCharacteristics()){
+L(u.slice(4,8)+' '+c.uuid);if(!C&&(c.properties.write||c.properties.writeWithoutResponse))C=c}}catch(e){}}}
+if(!C)throw Error('書込先なし');$('p').disabled=false;L('準備OK')}catch(e){L('接続エラー:'+e.message)}};
+$('p').onclick=async()=>{try{const[W,H]=R(),[r,wb]=B(W,H);L('印刷 '+W+'x'+H);
+await w([27,78,13,5]);await Z(30);await w([27,78,4,15]);await Z(30);await w([31,17,+$('m').value]);await Z(30);
+await w([29,118,48,0,wb&255,wb>>8,H&255,H>>8]);
+for(let i=0;i<r.length;i+=128){await w(r.subarray(i,i+128));await Z(20)}
+await Z(300);await w([31,240,5,0,31,240,3,0]);L('送信完了')}catch(e){L('印刷エラー:'+e.message)}};
+['t','w','h','s','m'].forEach(i=>$(i).oninput=R);R();L('Web Bluetooth:'+(navigator.bluetooth?'あり':'なし'));
+</script></body></html>
