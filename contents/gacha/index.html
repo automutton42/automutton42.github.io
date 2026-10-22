@@ -39,6 +39,12 @@ h1{margin:0;font-weight:400;font-size:28px;line-height:1.3;letter-spacing:.42em;
 .key{fill:var(--bg);stroke:var(--ink);stroke-width:1}
 .kana{fill:var(--g1);font-family:"Hina Mincho",serif;font-size:8px;text-anchor:middle;dominant-baseline:central}
 .ink-line{fill:none;stroke:var(--ink);stroke-width:1}
+/* 打鍵中のキー：白黒反転して少し沈む */
+.k{transition:transform .06s}
+.k.down{transform:translateY(1px)}
+.k.down .key{fill:var(--ink)}
+.k.down .kana{fill:var(--bg)}
+#bar.down{fill:var(--ink)}
 .pull{flex:none;margin-top:23px;min-width:125px;height:45px;padding:0 18px 0 calc(18px + .4em);
   border:1px solid var(--ink);border-radius:0;background:var(--bg);color:var(--ink);
   font:inherit;font-size:13px;letter-spacing:.4em;cursor:pointer;transition:transform .08s,opacity .2s}
@@ -60,7 +66,7 @@ h1{margin:0;font-weight:400;font-size:28px;line-height:1.3;letter-spacing:.42em;
     <div class="body">
       <svg viewBox="0 0 282 140" aria-hidden="true">
         <g id="keys"></g>
-        <rect class="ink-line" x="67.7" y="108.4" width="146.6" height="11.3" rx="5.65"/>
+        <rect id="bar" class="ink-line" x="67.7" y="108.4" width="146.6" height="11.3" rx="5.65"/>
         <path class="ink-line" d="M1.7 131 V138 H280.3 V131"/>
       </svg>
     </div>
@@ -72,19 +78,38 @@ const POEMS_URL = 'poems.txt'; // 同じフォルダの詩ファイル（空行�
 const CREDIT = '花野わかれ';
 
 // キー（線画・かな）
+const KANA = 'あいうえおかきくけこさしすせそたちつてとなにぬね';
+const keyEls = [];
 (() => {
   const g = document.getElementById('keys'), ns = 'http://www.w3.org/2000/svg';
-  const kana = 'あいうえおかきくけこさしすせそたちつてとなにぬね';
   for (let r = 0; r < 3; r++) for (let i = 0; i < 8; i++) {
     const cx = 39 + i * 29, cy = 28 + r * 29;
+    const k = document.createElementNS(ns, 'g'); k.setAttribute('class', 'k');
     const c = document.createElementNS(ns, 'circle');
     c.setAttribute('class', 'key'); c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', 11.3);
     const t = document.createElementNS(ns, 'text');
     t.setAttribute('class', 'kana'); t.setAttribute('x', cx); t.setAttribute('y', cy);
-    t.textContent = kana[r * 8 + i];
-    g.append(c, t);
+    t.textContent = KANA[r * 8 + i];
+    k.append(c, t); g.appendChild(k); keyEls.push(k);
   }
 })();
+const barEl = document.getElementById('bar');
+const SMALL = { 'ぁ':'あ','ぃ':'い','ぅ':'う','ぇ':'え','ぉ':'お','っ':'つ','ゃ':'や','ゅ':'ゆ','ょ':'よ','ゎ':'わ','ゕ':'か','ゖ':'け' };
+// 打つ文字に対応するキー：かなは同じ音のキー（カタカナ・濁点・小書きもまとめる）、それ以外は文字ごとに決まったキー、空白はスペースバー
+function keyFor(ch) {
+  if (/\s/.test(ch)) return barEl;
+  let h = ch.normalize('NFD').replace(/[\u3099\u309A]/g, '');
+  const cp = h.codePointAt(0);
+  if (cp >= 0x30A1 && cp <= 0x30F6) h = String.fromCodePoint(cp - 0x60);
+  h = SMALL[h] || h;
+  const i = KANA.indexOf(h);
+  return keyEls[i >= 0 ? i : ch.codePointAt(0) % keyEls.length];
+}
+function press(ch) {
+  const el = keyFor(ch);
+  el.classList.add('down');
+  setTimeout(() => el.classList.remove('down'), 110);
+}
 
 const GAP = 10;
 const IDLE = 42; // 待機中に見える紙の高さ（プラテンに隠れる分を含む）
@@ -213,7 +238,7 @@ async function play() {
   let curB = -1;
   for (const st of steps) {
     if (skipReq || reduce) break;
-    if (st.el) st.el.classList.add('on');
+    if (st.el) { st.el.classList.add('on'); press(st.el.textContent); }
     const b = bottomOf(st);
     if (b !== curB) { curB = b; feedTo(b); }
     if (st.el) await sleep(55 + Math.random() * 45);
