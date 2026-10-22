@@ -1,65 +1,112 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>詩ガチャ</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>詩のシールガチャ</title>
 <link href="https://fonts.googleapis.com/css2?family=Hina+Mincho&family=Yuji+Mai&family=Yuji+Syuku&family=Shippori+Mincho&family=Zen+Old+Mincho&family=Kaisei+Opti&display=swap" rel="stylesheet">
-<style>body{font-family:'Hina Mincho',serif;max-width:480px;margin:auto;padding:16px;text-align:center}
-button{width:100%;font-size:18px;margin:6px 0;padding:14px;box-sizing:border-box;font-family:inherit}
-#g{font-size:26px;padding:28px}#log{font-size:12px;white-space:pre-wrap;text-align:left;color:#888}
-canvas{border:1px solid #999;max-width:100%;margin-top:12px}</style></head><body>
-<h2>詩ガチャ</h2>
-<button id="c">プリンタに接続</button>
-<button id="g" disabled>ガチャを回す</button>
-<canvas id="v"></canvas><div id="log"></div>
+<style>
+:root{--bg:#fff;--fg:#111;--sub:#999;--line:#e0e0e0;--panel:#f7f7f7;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#141414;--fg:#ececec;--sub:#808080;--line:#2c2c2c;--panel:#1c1c1c;color-scheme:dark}}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--fg);font-family:'Hina Mincho',serif;display:flex;flex-direction:column;
+height:100dvh;padding:max(10px,env(safe-area-inset-top)) 16px max(12px,env(safe-area-inset-bottom))}
+h1{text-align:center;font-weight:400;font-size:22px;letter-spacing:.3em;padding-left:.3em}
+#st{display:block;margin:4px auto 0;font:inherit;font-size:11px;letter-spacing:.15em;color:var(--sub);background:none;border:0;padding:4px}
+#stage{flex:1;position:relative;overflow:hidden;min-height:0}
+#strip:empty{display:none}#strip{position:absolute;left:50%;bottom:0;background:#fff;border:1px solid #ccc;padding:6px;display:flex;flex-direction:column;gap:9px;transition:transform .2s linear}
+#strip.out{transition:transform .5s ease-in}
+#strip canvas{display:block;border:1px solid #ddd;border-radius:4px;position:relative}
+#strip i{display:block;height:0;border-top:1px dashed #bbb;margin:-5px -6px}
+.platen{height:22px;border:1px solid var(--fg);border-radius:11px;background:var(--panel);position:relative;z-index:2;margin:0 8px}
+.tw{border:1px solid var(--fg);border-top:0;background:var(--panel);padding:12px 18px 14px;clip-path:polygon(5% 0,95% 0,100% 100%,0 100%)}
+.keys{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;padding:0 10px}
+.k{aspect-ratio:1;border-radius:50%;border:1px solid var(--fg);background:var(--bg);transition:background .05s}
+.k.hit{background:var(--fg)}
+.sp{margin:8px auto 0;width:55%;height:10px;border:1px solid var(--fg);border-radius:5px;background:var(--bg)}
+#go{margin-top:12px;width:100%;padding:16px;font:inherit;font-size:18px;letter-spacing:.3em;border:1px solid var(--fg);background:var(--bg);color:var(--fg)}
+#go:active{background:var(--fg);color:var(--bg)}#go:disabled{opacity:.4}
+#log{font-size:10px;color:var(--sub);text-align:center;height:14px;margin-top:4px;overflow:hidden}
+</style></head><body>
+<h1>詩のシールガチャ</h1>
+<button id="st">プリンタ未接続（タップで接続）</button>
+<div id="stage"><div id="strip"></div></div>
+<div class="platen"></div>
+<div class="tw"><div class="keys" id="keys"></div><div class="sp"></div></div>
+<button id="go">三連を引く</button>
+<div id="log"></div>
 <script>
-const P=[
-`最後まで大事にしてくれなんて仕方ないよね夢で見る夢`,
-`めちゃくちゃになり損ねたままここに居て伸びた影を君が踏むこと`,
-`改札をくぐり抜けては寄り添った
-名残惜しさと夢の残りと`,
-`どうしたって生きているから午後七時`,
-`まばたきのたびに短くなる朝よ`,
-`タイマーで夢を脅し忘れた朝に`,
-`春一番　鯨は空に　日は沖に`,
-`夕空に　菜の花ぽつんと　昇降口`,
-];
-const U='0000ff00-0000-1000-8000-00805f9b34fb';
-const $=i=>document.getElementById(i),Z=ms=>new Promise(r=>setTimeout(r,ms));
-let D,C,last=-1,done=null;const L=x=>$('log').textContent=x+'\n'+$('log').textContent;
+// ===== 設定 =====
+const CREDIT='花野わかれ';
 const FONTS=['Hina Mincho','Yuji Mai','Yuji Syuku','Shippori Mincho','Zen Old Mincho','Kaisei Opti'];
-const W=384,LW=320,H=240,PAD=12;let FF;
-function wrap(g,t,max){const o=[];for(const r of t.split('\n')){let l='';
-for(const ch of r){if(g.measureText(l+ch).width>max&&l){o.push(l);l=ch}else l+=ch}o.push(l)}return o}
-function R(t){const v=$('v'),g=v.getContext('2d');v.width=W;v.height=H;
-g.fillStyle='#fff';g.fillRect(0,0,W,H);let S=40,ls,lh;
-for(;S>=12;S--){g.font=S+'px '+FF;ls=wrap(g,t,LW-PAD*2);lh=Math.round(S*1.5);
-if(ls.length*lh<=H-PAD*2)break}
-g.fillStyle='#000';g.textAlign='center';g.textBaseline='middle';
-const top=(H-ls.length*lh)/2;ls.forEach((l,i)=>g.fillText(l,W/2,top+lh*i+lh/2))}
-function B(){const d=$('v').getContext('2d').getImageData(0,0,W,H).data,o=new Uint8Array(48*H);
-for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=(y*W+x)*4;
-if(d[i]*.299+d[i+1]*.587+d[i+2]*.114<128)o[y*48+(x>>3)]|=0x80>>(x&7)}return o}
-async function w(b){await C.writeValue(new Uint8Array(b))}
-$('c').onclick=async()=>{if(!navigator.bluetooth){L('Web Bluetoothなし。Bluefyで開いてください');return}
-try{D=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:[U]});
-const sv=await D.gatt.connect(),s=await sv.getPrimaryService(U);
-C=await s.getCharacteristic('0000ff02-0000-1000-8000-00805f9b34fb');
-const n=await s.getCharacteristic('0000ff03-0000-1000-8000-00805f9b34fb');
-n.addEventListener('characteristicvaluechanged',e=>{const a=new Uint8Array(e.target.value.buffer);
-if(a[0]==0x1a&&a[1]==0x0f&&a[2]==0x0c&&done)done()});await n.startNotifications();
-D.addEventListener('gattserverdisconnected',()=>{$('g').disabled=true;$('c').textContent='プリンタに再接続';L('切断されました')});
-$('g').disabled=false;$('c').textContent='接続中: '+(D.name||'');L('接続しました')}catch(e){L('接続エラー: '+e.message)}};
-$('g').onclick=async()=>{const b=$('g');b.disabled=true;b.textContent='印刷中…';
-try{let i;do{i=Math.floor(Math.random()*P.length)}while(P.length>1&&i==last);last=i;
-const fn=FONTS[Math.floor(Math.random()*FONTS.length)];FF='"'+fn+'",serif';
-try{await document.fonts.load('32px '+FF,P[i])}catch(e){}
-R(P[i]);const r=B();
-await w([27,78,13,5]);await Z(30);await w([27,78,4,15]);await Z(30);await w([31,17,10]);await Z(30);
-await w([29,118,48,0,48,0,H&255,H>>8]);
-for(let k=0;k<r.length;k+=128){await w(r.subarray(k,k+128));await Z(20)}
-await Z(300);const fin=new Promise(res=>{done=res;setTimeout(res,15000)});
-await w([31,240,5,0,31,240,3,0]);await fin;done=null;L('印刷しました: '+(i+1)+'番 / '+fn)}
-catch(e){L('印刷エラー: '+e.message)}
-b.textContent='ガチャを回す';b.disabled=!(D&&D.gatt.connected)};
-L('準備完了 / Web Bluetooth: '+(navigator.bluetooth?'あり':'なし'));
+const CHUNK=128, WAIT=0; // 印刷が乱れたらWAITを20に
+let POEMS=[`最後まで大事にしてくれなんて仕方ないよね夢で見る夢`,`まばたきのたびに短くなる朝よ`,`春一番　鯨は空に　日は沖に`];
+// ===============
+const $=i=>document.getElementById(i),Z=ms=>new Promise(r=>setTimeout(r,ms)),L=t=>$('log').textContent=t;
+const LW=320,LH=240,NG='、。，．・ー）」』！？…ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮ';
+let C=null,done=null,dev=null;
+fetch('poems.txt',{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
+ const a=t.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);if(a.length)POEMS=a;L(POEMS.length+'編')}).catch(()=>L('poems.txt未読込'));
+for(let i=0;i<24;i++){const k=document.createElement('div');k.className='k';$('keys').appendChild(k)}
+// 改行：明示改行を優先、残りは均等割り＋禁則＋空白優先
+const SEG=window.Intl&&Intl.Segmenter?new Intl.Segmenter('ja',{granularity:'word'}):null;
+const HI=c=>/[ぁ-ん]/.test(c),KK=c=>/[一-龠々ァ-ヴー]/.test(c),SPC=c=>c=='　'||c==' ';
+function split(s,k,fit,mp){if(k<=1)return[s];const n=s.length,sb=new Set();if(SEG)for(const x of SEG.segment(s))sb.add(x.index);
+ const pen=b=>NG.includes(s[b])?1e9:SPC(s[b])||SPC(s[b-1])?0:(HI(s[b-1])&&KK(s[b]))?.5:sb.has(b)?2:6,av=n/k;
+ const ln=(a,b)=>{const t=s.slice(a,b).trim();return t&&fit(t)?((b-a)-av)**2*.15:1e9};
+ let D=new Map([[0,{c:0,r:[0]}]]);
+ for(let j=1;j<k;j++){const N=new Map();
+  for(const[a,v]of D)for(let b=a+1;b<n;b++){const q=pen(b);if(q>mp)continue;const c=v.c+q+ln(a,b);if(c<1e8&&(!N.has(b)||c<N.get(b).c))N.set(b,{c,r:[...v.r,b]})}
+  D=N}
+ let best=null;for(const[a,v]of D){const c=v.c+ln(a,n);if(c<1e8&&(!best||c<best.c))best={c,r:[...v.r,n]}}
+ if(!best)return null;const o=[];for(let i=1;i<best.r.length;i++)o.push(s.slice(best.r[i-1],best.r[i]).trim());return o}
+function layout(g,t,ff){const parts=t.split('\n'),M=LW-36;
+ for(const mp of[-1,.5,2,6])for(let S=30;S>=(mp<0?24:mp<6?14:11);S--){g.font=S+'px '+ff;const lh=S*1.55,fit=x=>g.measureText(x).width<=M;
+  const ls=[];for(const p of parts){let r=fit(p)?[p]:null;const sp=p.split(/[　 ]+/);
+   if(!r&&sp.length>1&&sp.every(fit))r=sp;
+   for(let k=Math.max(2,Math.ceil(g.measureText(p).width/M));mp>=0&&k<=6&&!r;k++)r=split(p,k,fit,mp);
+   if(!r){ls.length=99;break}ls.push(...r)}
+  if(ls.length*lh<=LH-48)return{S,lh,ls}}
+ g.font='11px '+ff;return{S:11,lh:17,ls:parts}}
+function draw(cv,lo,ff,n){const g=cv.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,LW,LH);g.fillStyle='#000';
+ g.textAlign='center';g.textBaseline='middle';g.font=lo.S+'px '+ff;const top=(LH-12-lo.ls.length*lo.lh)/2;let c=n;
+ lo.ls.forEach((l,i)=>{if(c<=0)return;g.fillText(l.slice(0,c),LW/2-(c<l.length?(g.measureText(l).width-g.measureText(l.slice(0,c)).width)/2:0),top+lo.lh*(i+.5));c-=l.length});
+ if(n>=lo.ls.join('').length){g.font='14px "Hina Mincho",serif';g.textAlign='right';g.fillText(CREDIT,LW-10,LH-12)}}
+// ===== プリンタ =====
+async function w(b){await C.writeValue(b instanceof Uint8Array?b:new Uint8Array(b))}
+async function printLabel(cv){const W=384,H=LH,c=document.createElement('canvas');c.width=W;c.height=H;
+ const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,W,H);g.drawImage(cv,32,0);
+ const d=g.getImageData(0,0,W,H).data,r=new Uint8Array(48*H);
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=(y*W+x)*4;if(d[i]*.299+d[i+1]*.587+d[i+2]*.114<128)r[y*48+(x>>3)]|=0x80>>(x&7)}
+ await w([27,78,13,5]);await w([27,78,4,15]);await w([31,17,10]);await w([29,118,48,0,48,0,H&255,H>>8]);
+ for(let k=0;k<r.length;k+=CHUNK){await w(r.subarray(k,k+CHUNK));if(WAIT)await Z(WAIT)}
+ const fin=new Promise(res=>{done=res;setTimeout(res,15000)});await w([31,240,5,0,31,240,3,0]);await fin;done=null}
+$('st').onclick=async()=>{if(!navigator.bluetooth){L('Bluefyで開いてください');return}
+ try{const U='0000ff00-0000-1000-8000-00805f9b34fb';dev=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:[U]});
+ const s=await(await dev.gatt.connect()).getPrimaryService(U);
+ C=await s.getCharacteristic('0000ff02-0000-1000-8000-00805f9b34fb');
+ const n=await s.getCharacteristic('0000ff03-0000-1000-8000-00805f9b34fb');
+ n.addEventListener('characteristicvaluechanged',e=>{const a=new Uint8Array(e.target.value.buffer);if(a[0]==26&&a[1]==15&&a[2]==12&&done)done()});
+ await n.startNotifications();$('st').textContent='接続中：'+(dev.name||'');
+ dev.addEventListener('gattserverdisconnected',()=>{C=null;$('st').textContent='切断されました（タップで再接続）'})}
+ catch(e){L('接続エラー：'+e.message)}};
+// ===== ガチャ =====
+const strip=$('strip');let sw=0;
+function size(){const st=$('stage'),h=Math.min((st.clientHeight-12-18)/3,(st.clientWidth-14)*.75);sw=Math.floor(h*4/3)}
+size();addEventListener('resize',size);
+$('go').onclick=async()=>{const b=$('go');b.disabled=true;
+ if(strip.children.length){strip.classList.add('out');strip.style.transform=`translate(-50%,${-$('stage').clientHeight-strip.offsetHeight}px)`;await Z(520);strip.classList.remove('out')}
+ const idx=[];while(idx.length<3){const i=Math.floor(Math.random()*POEMS.length);if(!idx.includes(i)||POEMS.length<3)idx.push(i)}
+ strip.innerHTML='';const items=[];
+ for(let j=0;j<3;j++){const ff='"'+FONTS[Math.floor(Math.random()*FONTS.length)]+'",serif',t=POEMS[idx[j]];
+  try{await document.fonts.load('24px '+ff,t)}catch(e){}
+  const cv=document.createElement('canvas');cv.width=LW;cv.height=LH;cv.style.width=sw+'px';
+  const lo=layout(cv.getContext('2d'),t,ff);draw(cv,lo,ff,0);items.push({cv,lo,ff});
+  if(j)strip.appendChild(document.createElement('i'));strip.appendChild(cv)}
+ const SH=strip.offsetHeight;strip.style.transition='none';strip.style.transform=`translate(-50%,${SH}px)`;void strip.offsetHeight;strip.style.transition='';
+ const total=items.reduce((a,x)=>a+x.lo.ls.join('').length,0),keys=[...$('keys').children];
+ let typed=0;const t0=Date.now();
+ const pr=C?(async()=>{for(const x of items){const pc=document.createElement('canvas');pc.width=LW;pc.height=LH;draw(pc,x.lo,x.ff,1e9);await printLabel(pc)}})().catch(e=>L('印刷エラー：'+e.message)):Promise.resolve(L('未接続のため印刷なし'));
+ for(const x of items){const n=x.lo.ls.join('').length;
+  for(let c=1;c<=n;c++){draw(x.cv,x.lo,x.ff,c);typed++;const k=keys[Math.floor(Math.random()*keys.length)];k.classList.add('hit');setTimeout(()=>k.classList.remove('hit'),60);
+   strip.style.transform=`translate(-50%,${SH*(1-typed/total)}px)`;await Z(45)}}
+ await pr;if(C)L('印刷完了 '+((Date.now()-t0)/1000).toFixed(1)+'秒');b.disabled=false};
 </script></body></html>
