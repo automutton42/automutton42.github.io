@@ -12,16 +12,17 @@ height:100dvh;padding:max(10px,env(safe-area-inset-top)) 16px max(12px,env(safe-
 h1{text-align:center;font-weight:400;font-size:22px;letter-spacing:.3em;padding-left:.3em}
 #st{display:block;margin:4px auto 0;font:inherit;font-size:11px;letter-spacing:.15em;color:var(--sub);background:none;border:0;padding:4px}
 #stage{flex:1;position:relative;overflow:hidden;min-height:0}
-#strip:empty{display:none}#strip{position:absolute;left:50%;bottom:0;background:#fff;border:1px solid #ccc;padding:6px;display:flex;flex-direction:column;gap:9px;transition:transform .2s linear}
+#strip:empty{display:none}#strip{position:absolute;left:50%;bottom:0;transform:translate(-50%,100%);background:#fff;border:1px solid #ccc;padding:6px;display:flex;flex-direction:column;gap:9px;transition:transform .2s linear}
 #strip.out{transition:transform .5s ease-in}
 #strip canvas{display:block;border:1px solid #ddd;border-radius:4px;position:relative}
 #strip i{display:block;height:0;border-top:1px dashed #bbb;margin:-5px -6px}
-.platen{height:22px;border:1px solid var(--fg);border-radius:11px;background:var(--panel);position:relative;z-index:2;margin:0 8px}
-.tw{border:1px solid var(--fg);border-top:0;background:var(--panel);padding:12px 18px 14px;clip-path:polygon(5% 0,95% 0,100% 100%,0 100%)}
-.keys{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;padding:0 10px}
-.k{aspect-ratio:1;border-radius:50%;border:1px solid var(--fg);background:var(--bg);transition:background .05s}
-.k.hit{background:var(--fg)}
-.sp{margin:8px auto 0;width:55%;height:10px;border:1px solid var(--fg);border-radius:5px;background:var(--bg)}
+#tw{display:block;width:100%;max-width:440px;margin:-7px auto 0;position:relative;z-index:2;overflow:visible}
+#tw .ln{fill:none;stroke:var(--fg);stroke-width:1.2}
+#tw .pn{fill:var(--panel);stroke:var(--fg);stroke-width:1.2}
+#tw .bg{fill:var(--bg);stroke:var(--fg);stroke-width:1.2}
+#tw .tx{fill:var(--fg);font-family:'Hina Mincho',serif;text-anchor:middle;dominant-baseline:central}
+#tw .key{transition:transform .06s}
+#tw .key.hit{transform:translateY(2px)}#tw .key.hit circle.cap{fill:var(--fg)}#tw .key.hit text{fill:var(--bg)}
 #go{margin-top:12px;width:100%;padding:16px;font:inherit;font-size:18px;letter-spacing:.3em;border:1px solid var(--fg);background:var(--bg);color:var(--fg)}
 #go:active{background:var(--fg);color:var(--bg)}#go:disabled{opacity:.4}
 #log{font-size:10px;color:var(--sub);text-align:center;height:14px;margin-top:4px;overflow:hidden}
@@ -29,14 +30,23 @@ h1{text-align:center;font-weight:400;font-size:22px;letter-spacing:.3em;padding-
 <h1>詩のシールガチャ</h1>
 <button id="st">プリンタ未接続（タップで接続）</button>
 <div id="stage"><div id="strip"></div></div>
-<div class="platen"></div>
-<div class="tw"><div class="keys" id="keys"></div><div class="sp"></div></div>
-<button id="go">三連を引く</button>
+<svg id="tw" viewBox="0 0 360 118" aria-hidden="true">
+<rect class="pn" x="6" y="8" width="348" height="106" rx="14"/>
+<rect class="bg" x="40" y="0" width="280" height="14" rx="7"/>
+<path class="ln" d="M52 7 H308" stroke-dasharray="2 4" opacity=".5"/>
+<g id="keys"></g>
+<rect class="bg" x="110" y="94" width="140" height="10" rx="5"/>
+</svg>
+<button id="go">ガチャを引く</button>
 <div id="log"></div>
 <script>
 // ===== 設定 =====
 const CREDIT='花野わかれ';
-const FONTS=['Hina Mincho','Yuji Mai','Yuji Syuku','Shippori Mincho','Zen Old Mincho','Kaisei Opti'];
+// 何連にするか（URL末尾に ?n=2 を付けてもその回数になる。画面には出ない）
+const COUNT=Math.min(5,Math.max(1,+new URLSearchParams(location.search).get('n')||3));
+// フォントと出やすさ（数字が大きいほど出やすい）
+const FONTS={'Hina Mincho':5,'Yuji Mai':1,'Yuji Syuku':1,'Shippori Mincho':1,'Zen Old Mincho':1,'Kaisei Opti':1};
+function pickFont(){const e=Object.entries(FONTS);let r=Math.random()*e.reduce((a,x)=>a+x[1],0);for(const[f,w]of e){if((r-=w)<0)return f}return e[0][0]}
 const CHUNK=128, WAIT=0; // 印刷が乱れたらWAITを20に
 let POEMS=[`最後まで大事にしてくれなんて仕方ないよね夢で見る夢`,`まばたきのたびに短くなる朝よ`,`春一番　鯨は空に　日は沖に`];
 // ===============
@@ -45,7 +55,10 @@ const LW=320,LH=240,NG='、。，．・ー）」』！？…ぁぃぅぇぉっ�
 let C=null,done=null,dev=null;
 fetch('poems.txt',{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
  const a=t.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);if(a.length)POEMS=a;L(POEMS.length+'編')}).catch(()=>L('poems.txt未読込'));
-for(let i=0;i<24;i++){const k=document.createElement('div');k.className='k';$('keys').appendChild(k)}
+(()=>{const rows=['あかさたなはまやらわ','いきしちにひみゆり','うくすつぬふむる'],K=$('keys');let h='';
+ rows.forEach((r,ri)=>{const n=r.length,x0=180-(n-1)*15;[...r].forEach((c,i)=>{const x=x0+i*30,y=36+ri*20;
+  h+=`<g class="key"><circle class="bg cap" cx="${x}" cy="${y}" r="9.5"/><circle class="ln" cx="${x}" cy="${y}" r="7" opacity=".5"/><text class="tx" x="${x}" y="${y}" font-size="8.5">${c}</text></g>`})});
+ K.innerHTML=h})();
 // 改行：明示改行を優先、残りは均等割り＋禁則＋空白優先
 const SEG=window.Intl&&Intl.Segmenter?new Intl.Segmenter('ja',{granularity:'word'}):null;
 const HI=c=>/[ぁ-ん]/.test(c),KK=c=>/[一-龠々ァ-ヴー]/.test(c),SPC=c=>c=='　'||c==' ';
@@ -71,7 +84,7 @@ function draw(cv,lo,ff,n){const g=cv.getContext('2d');g.fillStyle='#fff';g.fillR
  lo.ls.forEach((l,i)=>{if(c<=0)return;g.fillText(l.slice(0,c),LW/2-(c<l.length?(g.measureText(l).width-g.measureText(l.slice(0,c)).width)/2:0),top+lo.lh*(i+.5));c-=l.length});
  if(n>=lo.ls.join('').length){g.font='14px "Hina Mincho",serif';g.textAlign='right';g.fillText(CREDIT,LW-10,LH-12)}}
 // ===== プリンタ =====
-async function w(b){await C.writeValue(b instanceof Uint8Array?b:new Uint8Array(b))}
+async function w(b){b=b instanceof Uint8Array?b:new Uint8Array(b);if(C.writeValueWithResponse)await C.writeValueWithResponse(b);else await C.writeValue(b)}
 async function printLabel(cv){const W=384,H=LH,c=document.createElement('canvas');c.width=W;c.height=H;
  const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,W,H);g.drawImage(cv,32,0);
  const d=g.getImageData(0,0,W,H).data,r=new Uint8Array(48*H);
@@ -79,7 +92,7 @@ async function printLabel(cv){const W=384,H=LH,c=document.createElement('canvas'
  await w([27,78,13,5]);await w([27,78,4,15]);await w([31,17,10]);await w([29,118,48,0,48,0,H&255,H>>8]);
  for(let k=0;k<r.length;k+=CHUNK){await w(r.subarray(k,k+CHUNK));if(WAIT)await Z(WAIT)}
  const fin=new Promise(res=>{done=res;setTimeout(res,15000)});await w([31,240,5,0,31,240,3,0]);await fin;done=null}
-$('st').onclick=async()=>{if(!navigator.bluetooth){L('Bluefyで開いてください');return}
+$('st').onclick=async()=>{if(!navigator.bluetooth){L('iPhoneはBluefy、AndroidはChromeで開いてください');return}
  try{const U='0000ff00-0000-1000-8000-00805f9b34fb';dev=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:[U]});
  const s=await(await dev.gatt.connect()).getPrimaryService(U);
  C=await s.getCharacteristic('0000ff02-0000-1000-8000-00805f9b34fb');
@@ -90,23 +103,23 @@ $('st').onclick=async()=>{if(!navigator.bluetooth){L('Bluefyで開いてくだ�
  catch(e){L('接続エラー：'+e.message)}};
 // ===== ガチャ =====
 const strip=$('strip');let sw=0;
-function size(){const st=$('stage'),h=Math.min((st.clientHeight-12-18)/3,(st.clientWidth-14)*.75);sw=Math.floor(h*4/3)}
+function size(){const st=$('stage'),h=Math.min((st.clientHeight-12-9*(COUNT-1))/COUNT,(st.clientWidth-14)*.75);sw=Math.floor(Math.min(h*4/3,$('tw').getBoundingClientRect().width*280/360-24))}
 size();addEventListener('resize',size);
 $('go').onclick=async()=>{const b=$('go');b.disabled=true;
  if(strip.children.length){strip.classList.add('out');strip.style.transform=`translate(-50%,${-$('stage').clientHeight-strip.offsetHeight}px)`;await Z(520);strip.classList.remove('out')}
- const idx=[];while(idx.length<3){const i=Math.floor(Math.random()*POEMS.length);if(!idx.includes(i)||POEMS.length<3)idx.push(i)}
- strip.innerHTML='';const items=[];
- for(let j=0;j<3;j++){const ff='"'+FONTS[Math.floor(Math.random()*FONTS.length)]+'",serif',t=POEMS[idx[j]];
-  try{await document.fonts.load('24px '+ff,t)}catch(e){}
-  const cv=document.createElement('canvas');cv.width=LW;cv.height=LH;cv.style.width=sw+'px';
+ const idx=[];while(idx.length<COUNT){const i=Math.floor(Math.random()*POEMS.length);if(!idx.includes(i)||POEMS.length<COUNT)idx.push(i)}
+ const sel=idx.map((_,j)=>({t:POEMS[idx[j]],ff:'"'+pickFont()+'",serif'}));
+ await Promise.all(sel.map(x=>document.fonts.load('24px '+x.ff,x.t).catch(()=>{})));
+ strip.style.visibility='hidden';strip.innerHTML='';const items=[];
+ sel.forEach(({t,ff},j)=>{const cv=document.createElement('canvas');cv.width=LW;cv.height=LH;cv.style.width=sw+'px';
   const lo=layout(cv.getContext('2d'),t,ff);draw(cv,lo,ff,0);items.push({cv,lo,ff});
-  if(j)strip.appendChild(document.createElement('i'));strip.appendChild(cv)}
- const SH=strip.offsetHeight;strip.style.transition='none';strip.style.transform=`translate(-50%,${SH}px)`;void strip.offsetHeight;strip.style.transition='';
- const total=items.reduce((a,x)=>a+x.lo.ls.join('').length,0),keys=[...$('keys').children];
+  if(j)strip.appendChild(document.createElement('i'));strip.appendChild(cv)});
+ const SH=strip.offsetHeight;strip.style.transition='none';strip.style.transform=`translate(-50%,${SH}px)`;void strip.offsetHeight;strip.style.transition='';strip.style.visibility='';
+ const total=items.reduce((a,x)=>a+x.lo.ls.join('').length,0),keys=[...document.querySelectorAll('#keys .key')];
  let typed=0;const t0=Date.now();
  const pr=C?(async()=>{for(const x of items){const pc=document.createElement('canvas');pc.width=LW;pc.height=LH;draw(pc,x.lo,x.ff,1e9);await printLabel(pc)}})().catch(e=>L('印刷エラー：'+e.message)):Promise.resolve(L('未接続のため印刷なし'));
  for(const x of items){const n=x.lo.ls.join('').length;
-  for(let c=1;c<=n;c++){draw(x.cv,x.lo,x.ff,c);typed++;const k=keys[Math.floor(Math.random()*keys.length)];k.classList.add('hit');setTimeout(()=>k.classList.remove('hit'),60);
+  for(let c=1;c<=n;c++){draw(x.cv,x.lo,x.ff,c);typed++;const k=keys[Math.floor(Math.random()*keys.length)];k.classList.add('hit');setTimeout(()=>k.classList.remove('hit'),80);
    strip.style.transform=`translate(-50%,${SH*(1-typed/total)}px)`;await Z(45)}}
  await pr;if(C)L('印刷完了 '+((Date.now()-t0)/1000).toFixed(1)+'秒');b.disabled=false};
 </script></body></html>
