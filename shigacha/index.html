@@ -53,8 +53,12 @@ let POEMS=[`最後まで大事にしてくれなんて仕方ないよね夢で�
 const $=i=>document.getElementById(i),Z=ms=>new Promise(r=>setTimeout(r,ms)),L=t=>$('log').textContent=t;
 const LW=320,LH=240,NG='、。，．・ー）」』！？…ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮ';
 let C=null,done=null,dev=null;
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+async function prep(){const all=[...new Set(POEMS.join('')+CREDIT+'詩のシールガチャ')].join('');
+ await Promise.all(Object.keys(FONTS).filter(f=>FONTS[f]>0).map(f=>document.fonts.load('24px "'+f+'"',all).catch(()=>{})));
+ L(POEMS.length+'編・準備完了'+(navigator.serviceWorker&&navigator.serviceWorker.controller?'（オフライン可）':''))}
 fetch('poems.txt',{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{
- const a=t.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);if(a.length)POEMS=a;L(POEMS.length+'編')}).catch(()=>L('poems.txt未読込'));
+ const a=t.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);if(a.length)POEMS=a}).catch(()=>{}).then(()=>{L('読み込み中…');return prep()});
 (()=>{const rows=['あかさたなはまやらわ','いきしちにひみゆり','うくすつぬふむる'],K=$('keys');let h='';
  rows.forEach((r,ri)=>{const n=r.length,x0=180-(n-1)*15;[...r].forEach((c,i)=>{const x=x0+i*30,y=36+ri*20;
   h+=`<g class="key"><circle class="bg cap" cx="${x}" cy="${y}" r="9.5"/><circle class="ln" cx="${x}" cy="${y}" r="7" opacity=".5"/><text class="tx" x="${x}" y="${y}" font-size="8.5">${c}</text></g>`})});
